@@ -1,17 +1,29 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import { useMemo, useState } from 'react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import get from 'lodash/get'
 
 const Home = () => {
-  return (
-    <>
-      <Navbar />
-      <div>
-        <h1>Hello world</h1>
-      </div>
-      <Footer />
-    </>
-  )
+  const [toursData, setTourData] = useState([])
+  console.log(toursData)
+  const getAllTours = async () => {
+    try {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://127.0.0.1:3002/api/v1/tours',
+      })
+
+      const toursData = get(res, 'data.data.data') || []
+      setTourData(toursData)
+    } catch (err) {
+      toast.error(err.message)
+    }
+  }
+
+  useMemo(() => {
+    getAllTours()
+  }, [])
+  return <div>home</div>
 }
+
 export default Home
